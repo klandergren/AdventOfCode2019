@@ -9,6 +9,14 @@ import Foundation
 
 extension URL {
 
+  public func aoc_commaInts() -> [Int] {
+    aoc_linesAsStrings()
+      .reduce("", +)
+      .split(separator: ",")
+      .map { String($0) }
+      .map { Int($0)! }
+  }
+
   public func aoc_linesAsInts() -> [Int] {
     aoc_linesAsStrings()
       .map { Int($0)! }
