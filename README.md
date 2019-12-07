@@ -14,6 +14,8 @@ $ swift build -c release
 $ ./.build/release/AdventOfCode2019 [puzzle-name] path/to/input.txt [additional-arg1] [additional-arg2]
 ```
 
+where `path/to/input.txt` contains supplied input data. `additional-arg1` and others are problem dependent. `InputData/` exists as a convenient git-ignored location to store files.
+
 examples:
 
 ```
