@@ -21,6 +21,8 @@ public struct Runner {
     "day04-part2",
     "day05-part1",
     "day05-part2",
+    "day06-part1",
+    "day06-part2",
   ]
 
   private let _puzzle: String
@@ -101,14 +103,24 @@ public struct Runner {
       print("\(Day04.part2(_inputData))")
     case "day05-part1":
       guard _additionalArgs.count == 0 else {
-        fatalError("\n\nday04-part2 requires no additional args\n\n")
+        fatalError("\n\nday05-part1 requires no additional args\n\n")
       }
       Day05.bothParts(_inputData)
     case "day05-part2":
       guard _additionalArgs.count == 0 else {
-        fatalError("\n\nday04-part2 requires no additional args\n\n")
+        fatalError("\n\nday05-part2 requires no additional args\n\n")
       }
       Day05.bothParts(_inputData)
+    case "day06-part1":
+      guard _additionalArgs.count == 0 else {
+        fatalError("\n\nday06-part1 requires no additional args\n\n")
+      }
+      print("\(Day06.part1(_inputData))")
+    case "day06-part2":
+      guard _additionalArgs.count == 0 else {
+        fatalError("\n\nday06-part2 requires no additional args\n\n")
+      }
+      print("\(Day06.part2(_inputData))")
     default:
       fatalError("not implemented")
     }
