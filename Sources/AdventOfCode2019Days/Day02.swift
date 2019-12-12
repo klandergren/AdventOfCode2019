@@ -40,7 +40,9 @@ public struct Day02 {
 extension Day02 {
 
   public static func part1Single(_ program: [Int]) -> [Int] {
-    IntcodeComputer.run(program)
+    var computer = IntcodeComputer(program)
+    let result = computer.run()
+    return result
   }
 
 }
@@ -48,19 +50,11 @@ extension Day02 {
 extension Day02 {
 
   private static func _restoreAndRun(_ initialProgram: [Int], _ noun: Int, _ verb: Int) -> [Int] {
-    let restoredProgram = _restore(initialProgram, noun, verb)
-    let finalProgram = IntcodeComputer.run(restoredProgram)
+    var computer = IntcodeComputer(initialProgram)
+    computer.restore(address: 1, toValue: noun)
+    computer.restore(address: 2, toValue: verb)
 
-    return finalProgram
-  }
-
-  private static func _restore(_ initialProgram: [Int], _ noun: Int, _ verb: Int) -> [Int] {
-    var program = initialProgram
-
-    program[1] = noun
-    program[2] = verb
-
-    return program
+    return computer.run()
   }
 
 }
