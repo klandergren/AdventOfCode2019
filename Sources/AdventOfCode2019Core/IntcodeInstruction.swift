@@ -31,11 +31,11 @@ public struct IntcodeInstruction {
   private let _rawOpcode: Int
   private let _cleanedOpcode: Int
   private let _numParams: Int
-  private let _block: ([Parameter], inout Int, inout [Int]) -> Void
+  private let _block: ([Parameter], inout Int, inout [Int], IntcodeIO) -> Void
 
   private static let kValidOpcodes = [1,2,3,4,5,6,7,8,99]
 
-  private init(_ opcode: Int, _ numParams: Int, block: @escaping ([Parameter], inout Int, inout [Int]) -> Void) {
+  private init(_ opcode: Int, _ numParams: Int, block: @escaping ([Parameter], inout Int, inout [Int], IntcodeIO) -> Void) {
     _rawOpcode = opcode
     _cleanedOpcode = IntcodeInstruction._extractCleanedOpcode(opcode)
     _numParams = numParams
@@ -47,7 +47,7 @@ public struct IntcodeInstruction {
     1 + _numParams
   }
 
-  public func run(_ instructionPointer: inout Int, _ memory: inout [Int]) {
+  public func run(_ instructionPointer: inout Int, _ memory: inout [Int], _ io: IntcodeIO) {
 
     let paramValues = Array(memory[(instructionPointer + 1)..<(instructionPointer + numValues())])
 
@@ -62,11 +62,15 @@ public struct IntcodeInstruction {
       i += 1
     }
 
-    _block(params, &instructionPointer, &memory)
+    _block(params, &instructionPointer, &memory, io)
+  }
+
+  public func hasOutput() -> Bool {
+    _rawOpcode == 4
   }
 
   public func shouldHalt() -> Bool {
-    return _rawOpcode == 99
+    _rawOpcode == 99
   }
 
   public static func byOpcode(_ opcode: Int) -> IntcodeInstruction {
@@ -74,8 +78,8 @@ public struct IntcodeInstruction {
 
     switch kl_opcode {
     case 1:
-      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
@@ -92,8 +96,8 @@ public struct IntcodeInstruction {
         instructionPointer += (1 + params.count)
       }
     case 2:
-      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
@@ -112,32 +116,31 @@ public struct IntcodeInstruction {
         instructionPointer += (1 + params.count)
       }
     case 3:
-      return IntcodeInstruction(opcode, 1) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 1) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         guard paramA.mode == .Position else {
           fatalError("why is writing parameter in Immediate mode? opcode: \(opcode)")
         }
         let valueA = paramA.value
 
-        print("please enter input:")
-        let result = Int(readLine()!)!
+        let result = io.read()!
 
         memory[valueA] = result
         instructionPointer += (1 + params.count)
       }
     case 4:
-      return IntcodeInstruction(opcode, 1) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 1) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
-        print(valueA)
+        io.write(valueA)
         instructionPointer += (1 + params.count)
       }
     case 5:
-      return IntcodeInstruction(opcode, 2) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 2) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
@@ -150,8 +153,8 @@ public struct IntcodeInstruction {
         }
       }
     case 6:
-      return IntcodeInstruction(opcode, 2) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 2) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
@@ -164,8 +167,8 @@ public struct IntcodeInstruction {
         }
       }
     case 7:
-      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
@@ -187,8 +190,8 @@ public struct IntcodeInstruction {
         instructionPointer += (1 + params.count)
       }
     case 8:
-      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory) in
-        print("processing: \(opcode), \(params.map { $0.value })")
+      return IntcodeInstruction(opcode, 3) { (params, instructionPointer, memory, io) in
+//        print("processing: \(opcode), \(params.map { $0.value })")
         let paramA = params[0]
         let valueA = paramA.getValue(memory)
 
@@ -210,7 +213,7 @@ public struct IntcodeInstruction {
         instructionPointer += (1 + params.count)
       }
     case 99:
-      return IntcodeInstruction(opcode, 0) { (params, instructionPointer, memory) in
+      return IntcodeInstruction(opcode, 0) { (params, instructionPointer, memory, io) in
         // do nothing
       }
     default:
