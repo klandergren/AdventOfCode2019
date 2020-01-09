@@ -25,6 +25,8 @@ public struct Runner {
     "day06-part2",
     "day07-part1",
     "day07-part2",
+    "day08-part1",
+    "day08-part2",
   ]
 
   private let _puzzle: String
@@ -133,6 +135,20 @@ public struct Runner {
         fatalError("\n\nday07-part2 requires no additional args\n\n")
       }
       print("\(Day07.part2(_inputData))")
+    case "day08-part1":
+      guard _additionalArgs.count == 2 else {
+        var message = "\n\nday08-part1 requires additional args [width] and [height] for determining image checksum. Example:\n\n"
+        message += "$ AdventOfCode2019 day08-part1 relative/path/to/input.txt [width] [height]\n\n"
+        fatalError(message)
+      }
+      print("\(Day08.part1(_inputData, _additionalArgs))")
+    case "day08-part2":
+      guard _additionalArgs.count == 2 else {
+        var message = "\n\nday08-part2 requires additional args [width] and [height] for determining image checksum. Example:\n\n"
+        message += "$ AdventOfCode2019 day08-part2 relative/path/to/input.txt [width] [height]\n\n"
+        fatalError(message)
+      }
+      Day08.part2(_inputData, _additionalArgs)
     default:
       fatalError("not implemented")
     }
